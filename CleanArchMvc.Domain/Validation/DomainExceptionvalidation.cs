@@ -1,13 +1,13 @@
 ﻿namespace CleanArchMvc.Domain.Validation
 {
-    public class DomainExceptionvalidation : Exception
+    public class DomainExceptionValidation : Exception
     {
-        public DomainExceptionvalidation(string error) : base(error) { }
+        public DomainExceptionValidation(string error) : base(error) { }
 
         public static void When(bool hasError, string error)
         {
             if (hasError)
-                throw new DomainExceptionvalidation(error);
+                throw new DomainExceptionValidation(error);
         }
     }
 }
