@@ -1,8 +1,8 @@
-﻿using CleanArchMvc.Application.DTOs;
+﻿using AutoMapper;
+using CleanArchMvc.Application.DTOs;
 using CleanArchMvc.Application.Interfaces;
 using CleanArchMvc.Domain.Entities;
 using CleanArchMvc.Domain.Interfaces;
-using MapsterMapper;
 
 namespace CleanArchMvc.Application.Services;
 public class CategoryService : ICategoryService

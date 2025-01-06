@@ -1,13 +1,14 @@
-﻿using CleanArchMvc.Application.DTOs;
+﻿using AutoMapper;
+using CleanArchMvc.Application.DTOs;
 using CleanArchMvc.Domain.Entities;
 using Mapster;
 
 namespace CleanArchMvc.Application.Mappings;
-public static class DomainToDTOMapping
+public class DomainToDTOMapping : Profile
 {
-    public static void ConfigureMapppings()
+    public DomainToDTOMapping()
     {
-        TypeAdapterConfig<Category, CategoryDTO>.NewConfig();
-        TypeAdapterConfig<Product, ProductDTO>.NewConfig();
+        CreateMap<Category, CategoryDTO>().ReverseMap();
+        CreateMap<Product, ProductDTO>().ReverseMap();
     }
 }
