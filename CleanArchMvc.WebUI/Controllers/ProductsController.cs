@@ -25,8 +25,7 @@ public class ProductsController : Controller
     [HttpGet()]
     public async Task<IActionResult> Create()
     {
-        var categories = await _categoryService.GetCategories();
-        ViewBag.CategoryId = new SelectList(categories, "Id", "Name");
+        ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name");
         return View();
     }
 
@@ -43,5 +42,58 @@ public class ProductsController : Controller
         ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name");
 
         return View(productDTO);
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var productDto = await _productService.GetById(id);
+        if (productDto == null) return NotFound();
+
+        var categories = await _categoryService.GetCategories();
+
+        ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name");
+
+        return View(productDto);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(ProductDTO productDTO)
+    {
+        if (ModelState.IsValid)
+        {
+            await _productService.Update(productDTO);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(productDTO);
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var productDto = await _productService.GetById(id);
+        if (productDto == null) return NotFound();
+
+        return View(productDto);
+    }
+
+    [HttpPost(), ActionName("Delete")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _productService.Remove(id);
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null) return NotFound();
+        var productDto = await _productService.GetById(id);
+        if (productDto == null) return NotFound();
+        return View(productDto);
     }
 }

@@ -25,11 +25,11 @@ public static class DependencyInjection
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
 
-        services.AddAutoMapper(typeof(DomainToDTOMapping));
+        services.AddAutoMapper(typeof(MappingProfile));
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(GetProducsQueryHandler).Assembly); // Registra handlers do assembly correto
+            cfg.RegisterServicesFromAssembly(typeof(GetProducsQueryHandler).Assembly);
         });
 
         return services;

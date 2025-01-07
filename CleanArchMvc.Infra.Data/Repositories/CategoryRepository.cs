@@ -21,12 +21,12 @@ public class CategoryRepository : ICategoryReposiory
 
     public async Task<Category> GetById(int? id)
     {
-        return await _context.Categories.FindAsync(id);
+        return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<IEnumerable<Category>> GetCategories()
     {
-        return await _context.Categories.ToListAsync();
+        return await _context.Categories.Include(c => c.Products).ToListAsync();
     }
 
     public async Task<Category> Remove(Category category)
