@@ -14,10 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace CleanArchMvc.Infra.IoC;
-
-public static class DependencyInjection
+public static class DependencyInjectionAPI
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureAPI(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
@@ -30,29 +29,18 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
 
         services.AddScoped<IAuthenticate, AuthenticateService>();
-        services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
-        services.AddScoped<SeedUserRoleInitial>();
-
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.AccessDeniedPath = "/Account/Login";
-        });
-
         services.AddAutoMapper(typeof(MappingProfile));
 
-        var myhandlers = AppDomain.CurrentDomain.Load("CleanArchMvc.Application");
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(myhandlers));
-
-        //services.AddMediatR(cfg =>
-        //{
-        //    cfg.RegisterServicesFromAssembly(typeof(GetProducsQueryHandler).Assembly);
-        //    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        //});
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(GetProducsQueryHandler).Assembly);
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+        });
 
         return services;
     }

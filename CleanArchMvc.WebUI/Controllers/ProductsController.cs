@@ -1,5 +1,6 @@
 ﻿using CleanArchMvc.Application.DTOs;
 using CleanArchMvc.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -35,26 +36,33 @@ public class ProductsController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Preenche a propriedade Category com base no CategoryId
+            var category = await _categoryService.GetById(productDTO.CategoryId);
+            if (category == null)
+            {
+                ModelState.AddModelError("", "Invalid Category");
+                ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name", productDTO.CategoryId);
+                return View(productDTO);
+            }
+
             await _productService.Add(productDTO);
             return RedirectToAction(nameof(Index));
         }
 
-        ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name");
-
+        // Recarrega a lista de categorias para a ViewBag caso o ModelState seja inválido
+        ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name", productDTO.CategoryId);
         return View(productDTO);
     }
+
 
     [HttpGet()]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null) return NotFound();
-
         var productDto = await _productService.GetById(id);
         if (productDto == null) return NotFound();
-
         var categories = await _categoryService.GetCategories();
-
-        ViewBag.CategoryId = new SelectList(await _categoryService.GetCategories(), "Id", "Name");
+        ViewBag.CategoryId = new SelectList(categories, "Id", "Name", productDto.CategoryId);
 
         return View(productDto);
     }
@@ -70,6 +78,7 @@ public class ProductsController : Controller
         return View(productDTO);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet()]
     public async Task<IActionResult> Delete(int? id)
     {

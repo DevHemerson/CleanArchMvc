@@ -1,4 +1,5 @@
 ﻿using CleanArchMvc.Domain.Validation;
+using System.Text.Json.Serialization;
 
 namespace CleanArchMvc.Domain.Entities
 {
@@ -11,6 +12,7 @@ namespace CleanArchMvc.Domain.Entities
         public string Image { get; private set; }
 
         public int CategoryId { get; set; }
+        [JsonIgnore]
         public Category Category { get; set; }
 
         public Product() { }
